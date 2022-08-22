@@ -1,0 +1,80 @@
+---
+title: "MA500_Third_Homework_Ciara_McLoughlin"
+author: "Ciara McLoughlin 21245101"
+output:
+  word_document: default
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(TDA)
+```
+
+
+# Part 1
+
+Loading in the CSV package as "tides". 
+```{r}
+tides<- read.csv('galwaytides.csv')
+```
+
+
+# Part 2
+Extracting tide heights from the data set.
+
+
+Over a 2-week period. Start date 2007-03-15 at 18:54 (row 1) to end date 2007-03-29 at 18:54 (row 3360).
+```{r}
+TwoWeeks<- tides[1:3360,]
+
+names(TwoWeeks)
+height <- TwoWeeks[,8]
+```
+
+
+```{r}
+#200 random values
+index <- seq(1,3320, by=1)
+random <- sample(index, 200)
+
+
+h <- c()  # heights
+h2 <- c() # heights at t + 2h
+h4 <- c() # heights at t + 4h
+for (i in random) {
+  h  <- append(h,  height[i])
+  h2 <- append(h2, height[i+20])
+  h4 <- append(h4, height[i+40])
+}
+
+```
+
+```{r}
+S <- data.frame(h,h2,h4)
+```
+
+# Part 3
+
+```{r Part 3}
+#plotting 
+
+flat <- data.frame(h, h2)
+plot(flat)
+library(plot3D)
+scatter3D(h, h2, h4, theta=90 , phi=90, col="blue")
+
+maxdimension <- 1
+maxscale <- 2
+Diag <- ripsDiag(X = data.frame(h,h2,h4),
+                 maxdimension,
+                 maxscale,
+                 dist = "euclidean",
+                 library = "GUDHI",
+                 printProgress = FALSE)
+#(Diag[["diagram"]])
+plot(Diag[["diagram"]], barcode=TRUE) #change barcode=FALSE to get different representation of data
+```
+
+
